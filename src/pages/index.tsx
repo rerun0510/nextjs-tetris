@@ -1,10 +1,30 @@
-import { Flex, Box, Circle } from '@chakra-ui/react'
+import { useInterval } from '@/hooks/useInterval'
+import { Block } from '@/types/block'
+import { Center } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { Board } from '../components/Board'
+
+export const initBlocks = () => {
+  const col: Block[][] = []
+  for (let i = 0; i < 20; i++) {
+    const row: Block[] = []
+    for (let j = 0; j < 10; j++) {
+      row.push({ tetrimino: 'none' })
+    }
+    col.push(row)
+  }
+  col[0][4] = { tetrimino: 'i' }
+  return col
+}
 
 export default function Home() {
   const router = useRouter()
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState(true)
+  const [blocks, setBlocks] = useState(initBlocks())
+
+  const [count, setCount] = useState(0)
+  useInterval({ onUpdate: () => setCount(count + 1) })
 
   useEffect(() => {
     if (router.isReady) {
@@ -12,21 +32,22 @@ export default function Home() {
     }
   }, [router.isReady])
 
+  useEffect(() => {
+    if (count && count < 20) {
+      const tmpBlocks = [...blocks]
+      tmpBlocks[count][4] = tmpBlocks[count - 1][4]
+      tmpBlocks[count - 1][4] = { tetrimino: 'none' }
+      setBlocks(tmpBlocks)
+    }
+  }, [count])
+
+  console.log(count)
+
   if (loading) return <></>
 
   return (
-    <Box>
-      <Flex>
-        <Box h="5rem" w="5rem" bg="red" />
-        <Box h="5rem" w="5rem" bg="blue" />
-        <Box h="5rem" w="5rem" bg="green" />
-      </Flex>
-      <Flex flexDir="column">
-        <Box h="5rem" w="5rem" bg="blue" />
-        <Box h="5rem" w="5rem" bg="green" />
-        <Box h="5rem" w="5rem" bg="red" />
-      </Flex>
-      <Circle size="5rem" bg="yellow" />
-    </Box>
+    <Center>
+      <Board colBlocks={blocks} />
+    </Center>
   )
 }
