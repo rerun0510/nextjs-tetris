@@ -1,4 +1,3 @@
-import { IMino } from '@/components/minos'
 import {
   MINO_POINT_I,
   MINO_POINT_J,
