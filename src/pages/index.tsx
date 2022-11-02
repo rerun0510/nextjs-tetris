@@ -1,8 +1,9 @@
 import { Board } from '@/components/Board'
+import { Controller } from '@/components/controller'
 import { getMinoInfo } from '@/enums'
 import { useInterval } from '@/hooks/useInterval'
-import { Cell, OperatingMino } from '@/types'
-import { Center } from '@chakra-ui/react'
+import { Action, Cell, Deg, OperatingMino } from '@/types'
+import { Box, Center, Flex } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -33,31 +34,32 @@ export default function Home() {
   )
   const [count, setCount] = useState(0)
 
-  const roop = useCallback(() => {
+  const updateDisplay = useCallback(() => {
+    const { point, color } = getMinoInfo(operatingMino.mino)
+    const nextDisplayInfo = initDisplayInfo()
+    point[operatingMino.deg].forEach((col, y) => {
+      col.forEach((row, x) => {
+        if (row) {
+          nextDisplayInfo[y + operatingMino.pointY][
+            x + operatingMino.pointX
+          ] = {
+            color,
+            operating: true,
+          }
+        }
+      })
+    })
+    setDisplayInfo([...nextDisplayInfo])
+  }, [operatingMino])
+
+  const down = useCallback(() => {
     if (count && count < 20) {
       // 操作中のミノを1セル分落下
       setOperationgMino({
         ...operatingMino,
         pointY: operatingMino.pointY + 1,
       })
-
-      const { point, color } = getMinoInfo(
-        operatingMino.mino
-      )
-      const nextDisplayInfo = initDisplayInfo()
-      point[operatingMino.deg].forEach((col, y) => {
-        col.forEach((row, x) => {
-          if (row) {
-            nextDisplayInfo[y + operatingMino.pointY][
-              x + operatingMino.pointX
-            ] = {
-              color,
-              operating: true,
-            }
-          }
-        })
-      })
-      setDisplayInfo([...nextDisplayInfo])
+      updateDisplay()
     } else {
       setOperationgMino({
         pointX: 3,
@@ -67,9 +69,48 @@ export default function Home() {
       })
     }
     setCount(count + 1)
-  }, [count, operatingMino])
+  }, [count, operatingMino, updateDisplay])
 
-  useInterval({ onUpdate: () => roop() })
+  useInterval({ onUpdate: () => down() })
+
+  const action = useCallback(
+    (action: Action) => {
+      switch (action) {
+        case 'right':
+          setOperationgMino({
+            ...operatingMino,
+            pointX: operatingMino.pointX + 1,
+          })
+          break
+        case 'left':
+          setOperationgMino({
+            ...operatingMino,
+            pointX: operatingMino.pointX - 1,
+          })
+          break
+        case 'rotation':
+          setOperationgMino({
+            ...operatingMino,
+            deg: rotation(operatingMino.deg),
+          })
+      }
+      updateDisplay()
+    },
+    [operatingMino, updateDisplay]
+  )
+
+  const rotation = (deg: Deg): Deg => {
+    switch (deg) {
+      case 0:
+        return 90
+      case 90:
+        return 180
+      case 180:
+        return 270
+      case 270:
+        return 0
+    }
+  }
 
   useEffect(() => {
     if (router.isReady) {
@@ -79,9 +120,14 @@ export default function Home() {
 
   if (loading) return <></>
 
+  console.log('render')
   return (
     <Center>
-      <Board displayInfo={displayInfo} />
+      <Flex flexDir="column" alignItems="center">
+        <Board displayInfo={displayInfo} />
+        <Box h="30px" />
+        <Controller action={action} />
+      </Flex>
     </Center>
   )
 }

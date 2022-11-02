@@ -6,7 +6,7 @@ type Params = {
 
 export const useInterval = ({ onUpdate }: Params) => {
   useEffect(() => {
-    const timerId = setInterval(() => onUpdate(), 800)
+    const timerId = setInterval(() => onUpdate(), 1000)
     return () => clearInterval(timerId)
   })
 }
