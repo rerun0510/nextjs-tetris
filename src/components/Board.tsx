@@ -1,6 +1,7 @@
 import { Cell } from '@/types'
-import { Flex, Square } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 import { FC, memo, useCallback } from 'react'
+import { MinoSquare } from './minos/minoSquare'
 
 type Props = {
   displayInfo: Cell[][]
@@ -14,12 +15,7 @@ export const Board: FC<Props> = memo(function Board({
       const items: JSX.Element[] = []
       for (let i = 0; i < 10; i++) {
         items.push(
-          <Square
-            key={i}
-            size="25px"
-            border="solid 1px"
-            bg={rowBlocks[i].color}
-          />
+          <MinoSquare key={i} bg={rowBlocks[i].color} />
         )
       }
       return <Flex key={colNum}>{items}</Flex>

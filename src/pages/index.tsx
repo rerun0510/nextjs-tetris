@@ -1,9 +1,20 @@
-import { Board } from '@/components/Board'
+import { Board } from '@/components/board'
 import { Controller } from '@/components/controller'
+import {
+  IMino,
+  JMino,
+  LMino,
+  OMino,
+  SMino,
+  TMino,
+  ZMino,
+} from '@/components/minos'
+import { NextMinos } from '@/components/nextMinos'
 import { getMinoInfo } from '@/enums'
+import { useGeneratingMino } from '@/hooks/useGeneratingMino'
 import { useInterval } from '@/hooks/useInterval'
 import { Action, Cell, Deg, OperatingMino } from '@/types'
-import { Box, Center, Flex } from '@chakra-ui/react'
+import { Box, Center, Flex, VStack } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -33,6 +44,7 @@ export default function Home() {
     initDisplayInfo()
   )
   const [count, setCount] = useState(0)
+  const { nextMinos, popMino } = useGeneratingMino()
 
   const updateDisplay = useCallback(() => {
     const { point, color } = getMinoInfo(operatingMino.mino)
@@ -53,7 +65,7 @@ export default function Home() {
   }, [operatingMino])
 
   const down = useCallback(() => {
-    if (count && count < 20) {
+    if (count && count / 20 !== 0) {
       // 操作中のミノを1セル分落下
       setOperationgMino({
         ...operatingMino,
@@ -64,12 +76,12 @@ export default function Home() {
       setOperationgMino({
         pointX: 3,
         pointY: 0,
-        mino: 't',
+        mino: popMino(),
         deg: 0,
       })
     }
     setCount(count + 1)
-  }, [count, operatingMino, updateDisplay])
+  }, [count, operatingMino, popMino, updateDisplay])
 
   useInterval({ onUpdate: () => down() })
 
@@ -122,10 +134,22 @@ export default function Home() {
 
   return (
     <Center>
-      <Flex flexDir="column" alignItems="center">
-        <Board displayInfo={displayInfo} />
-        <Box h="30px" />
-        <Controller action={action} />
+      <Flex>
+        <VStack flexDir="column" alignItems="center">
+          <OMino />
+          <IMino />
+          <TMino />
+          <LMino />
+          <JMino />
+          <SMino />
+          <ZMino />
+        </VStack>
+        <Flex flexDir="column" alignItems="center">
+          <Board displayInfo={displayInfo} />
+          <Box h="30px" />
+          <Controller action={action} />
+        </Flex>
+        <NextMinos nextMinos={nextMinos} />
       </Flex>
     </Center>
   )

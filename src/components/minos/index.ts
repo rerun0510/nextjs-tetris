@@ -1,0 +1,8 @@
+export { IMino } from './iMino'
+export { JMino } from './jMino'
+export { LMino } from './lMino'
+export { MinoSquare } from './minoSquare'
+export { OMino } from './oMino'
+export { SMino } from './sMino'
+export { TMino } from './tMino'
+export { ZMino } from './zMino'

@@ -1,3 +1,4 @@
+import { IMino } from '@/components/minos'
 import {
   MINO_POINT_I,
   MINO_POINT_J,
@@ -9,6 +10,7 @@ import {
   MINO_POINT_Z,
 } from '@/constants/minoPoint'
 import { Point } from '@/types'
+import { FC } from 'react'
 
 const minos = {
   NONE: 'none',
@@ -27,6 +29,7 @@ type MinoInfo = {
   mino: Mino
   point: Point
   color: string
+  compornent?: FC
 }
 
 const minoInfo: MinoInfo[] = [
@@ -76,4 +79,10 @@ export const getMinoInfo = (mino: Mino) => {
   const result =
     minoInfo.find((e) => e.mino === mino) ?? minoInfo[0]
   return result
+}
+
+export const getMinos = () => {
+  const minos: Mino[] = []
+  minoInfo.forEach((e) => minos.push(e.mino))
+  return minos
 }
