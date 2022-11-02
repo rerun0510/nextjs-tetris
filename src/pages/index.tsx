@@ -65,7 +65,7 @@ export default function Home() {
   }, [operatingMino])
 
   const down = useCallback(() => {
-    if (count && count / 20 !== 0) {
+    if (count && count < 20) {
       // 操作中のミノを1セル分落下
       setOperationgMino({
         ...operatingMino,
