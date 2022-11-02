@@ -1,17 +1,16 @@
-import { getTetriminoInfo } from '@/enums/tetriminos.enum'
-import { Block } from '@/types/block'
+import { Cell } from '@/types'
 import { Flex, Square } from '@chakra-ui/react'
 import { FC, memo, useCallback } from 'react'
 
 type Props = {
-  colBlocks: Array<Array<Block>>
+  displayInfo: Cell[][]
 }
 
 export const Board: FC<Props> = memo(function Board({
-  colBlocks,
+  displayInfo,
 }) {
   const generateRowBlocks = useCallback(
-    (rowBlocks: Block[], colNum: number) => {
+    (rowBlocks: Cell[], colNum: number) => {
       const items: JSX.Element[] = []
       for (let i = 0; i < 10; i++) {
         items.push(
@@ -19,9 +18,7 @@ export const Board: FC<Props> = memo(function Board({
             key={i}
             size="30px"
             border="solid 1px"
-            bg={
-              getTetriminoInfo(rowBlocks[i].tetrimino).color
-            }
+            bg={rowBlocks[i].color}
           />
         )
       }
@@ -33,10 +30,10 @@ export const Board: FC<Props> = memo(function Board({
   const generateColBlocks = useCallback(() => {
     const items: JSX.Element[] = []
     for (let i = 0; i < 20; i++) {
-      items.push(generateRowBlocks(colBlocks[i], i))
+      items.push(generateRowBlocks(displayInfo[i], i))
     }
     return <Flex flexDir="column">{items}</Flex>
-  }, [colBlocks, generateRowBlocks])
+  }, [displayInfo, generateRowBlocks])
 
   return generateColBlocks()
 })
