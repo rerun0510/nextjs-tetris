@@ -120,7 +120,6 @@ export default function Home() {
 
   if (loading) return <></>
 
-  console.log('render')
   return (
     <Center>
       <Flex flexDir="column" alignItems="center">

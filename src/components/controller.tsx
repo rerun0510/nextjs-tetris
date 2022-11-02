@@ -5,7 +5,7 @@ import {
   BsArrowRightCircle,
   BsArrowLeftCircle,
 } from 'react-icons/bs'
-import { FiRotateCw } from 'react-icons/fi'
+import { FiRotateCcw } from 'react-icons/fi'
 
 type Props = {
   action: (action: Action) => void
@@ -22,7 +22,7 @@ export const Controller: FC<Props> = memo(
           <BsArrowRightCircle />
         </Button>
         <Button onClick={() => action('rotation')}>
-          <FiRotateCw />
+          <FiRotateCcw />
         </Button>
       </HStack>
     )
