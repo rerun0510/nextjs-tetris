@@ -16,7 +16,7 @@ export const Board: FC<Props> = memo(function Board({
         items.push(
           <Square
             key={i}
-            size="30px"
+            size="25px"
             border="solid 1px"
             bg={rowBlocks[i].color}
           />
